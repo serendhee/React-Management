@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import Customer from './components/Customer';
+import { Table,TableHead,TableBody,TableRow,TableCell,Box} from '@mui/material';
 
 const customers = [
     {
@@ -22,7 +23,7 @@ const customers = [
     {
         id: 3,
         image: 'https://picsum.photos/64/64',
-        name: '박민수',
+        name: '박민규',
         birthday: '941004',
         gender: '남자',
         job: '개발자',
@@ -31,7 +32,22 @@ const customers = [
 
 function App() {
     return (
-        <div>
+        <Box sx={{ padding: 2, boxShadow: 3 }}>
+          <Box sx={{width:"100%", marginTop: 3, overflowX: 'auto'}}>
+          <Table sx={{minWidth:1080}}>
+
+            <TableHead>
+              <TableRow>
+                <TableCell>번호</TableCell>
+                <TableCell>이미지</TableCell>
+                <TableCell>이름</TableCell>
+                <TableCell>생년월일</TableCell>
+                <TableCell>성별</TableCell>
+                <TableCell>직업</TableCell>
+              </TableRow>
+            </TableHead>
+
+            <TableBody>
           {
             customers.map(c => {
               return (
@@ -47,7 +63,11 @@ function App() {
               )
             })
           }
-        </div>
+          </TableBody>
+
+          </Table>
+          </Box>
+        </Box>
     );
 }
 
