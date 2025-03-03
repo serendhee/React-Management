@@ -1,56 +1,40 @@
-import React from 'react';
-import './App.css';
-import Customer from './components/Customer';
-import { Table,TableHead,TableBody,TableRow,TableCell,Box} from '@mui/material';
-
-const customers = [
-    {
-        id: 1,
-        image: 'https://picsum.photos/64/64',
-        name: '홍길동',
-        birthday: '990309',
-        gender: '남자',
-        job: '대학생',
-    },
-    {
-        id: 2,
-        image: 'https://picsum.photos/64/64',
-        name: '김성민',
-        birthday: '910102',
-        gender: '남자',
-        job: '프로그래머',
-    },
-    {
-        id: 3,
-        image: 'https://picsum.photos/64/64',
-        name: '박민규',
-        birthday: '941004',
-        gender: '남자',
-        job: '개발자',
-    },
-];
+import React, { useState, useEffect } from "react";
+import "./App.css";
+import Customer from "./components/Customer";
+import { Table, TableHead, TableBody, TableRow, TableCell, Box } from "@mui/material";
 
 function App() {
-    return (
-        <Box sx={{ padding: 2, boxShadow: 3 }}>
-          <Box sx={{width:"100%", marginTop: 3, overflowX: 'auto'}}>
-          <Table sx={{minWidth:1080}}>
+  const [customers, setCustomers] = useState([]); // useState로 state 관리
 
-            <TableHead>
-              <TableRow>
-                <TableCell>번호</TableCell>
-                <TableCell>이미지</TableCell>
-                <TableCell>이름</TableCell>
-                <TableCell>생년월일</TableCell>
-                <TableCell>성별</TableCell>
-                <TableCell>직업</TableCell>
-              </TableRow>
-            </TableHead>
+  useEffect(() => {
+    callApi()
+      .then((res) => setCustomers(res))
+      .catch((err) => console.log(err));
+  }, []); // 빈 배열 -> 컴포넌트 마운트 시 한 번만 실행됨
 
-            <TableBody>
-          {
-            customers.map(c => {
-              return (
+  const callApi = async () => {
+    const response = await fetch("/api/customers");
+    const body = await response.json();
+    return body;
+  };
+
+  return (
+    <Box sx={{ padding: 2, boxShadow: 3 }}>
+      <Box sx={{ width: "100%", marginTop: 3, overflowX: "auto" }}>
+        <Table sx={{ minWidth: 1080 }}>
+          <TableHead>
+            <TableRow>
+              <TableCell>번호</TableCell>
+              <TableCell>이미지</TableCell>
+              <TableCell>이름</TableCell>
+              <TableCell>생년월일</TableCell>
+              <TableCell>성별</TableCell>
+              <TableCell>직업</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {customers.length > 0 ? (
+              customers.map((c) => (
                 <Customer
                   key={c.id}
                   id={c.id}
@@ -59,16 +43,20 @@ function App() {
                   birthday={c.birthday}
                   gender={c.gender}
                   job={c.job}
-                  />
-              )
-            })
-          }
+                />
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colSpan={6} align="center">
+                  로딩 중...
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
-
-          </Table>
-          </Box>
-        </Box>
-    );
+        </Table>
+      </Box>
+    </Box>
+  );
 }
 
 export default App;
