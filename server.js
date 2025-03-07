@@ -59,7 +59,7 @@ connection.connect();
 
 // 고객 목록 조회 (GET 요청)
 app.get("/api/customers", (req, res) => {
-    connection.query("SELECT * FROM customer", (err, rows) => {
+    connection.query("SELECT * FROM customer WHERE isDeleted = 0", (err, rows) => {
         if (err) {
             return res.status(500).json({ error: 'Database query error' });
         }
@@ -84,7 +84,7 @@ app.post("/api/customers", upload.single('image'), (req, res) => {
         }
 
         // 데이터 삽입 쿼리
-        const query = "INSERT INTO customer (image, name, birthday, gender, job) VALUES (?, ?, ?, ?, ?)";
+        const query = "INSERT INTO customer (image, name, birthday, gender, job) VALUES (?, ?, ?, ?, ?,now(),0)";
         connection.query(query, [image, name, birthday, gender, job], (err, result) => {
             if (err) {
                 return res.status(500).json({ error: 'Database insertion error' });
@@ -93,6 +93,21 @@ app.post("/api/customers", upload.single('image'), (req, res) => {
             // 성공적으로 데이터를 삽입하고 이미지 파일명을 반환
             res.status(200).json({ message: 'Customer added successfully', image: image });
         });
+    });
+});
+
+app.delete("/api/customers/:id", (req, res) => {
+    const sql = "DELETE FROM customer WHERE id = ?";
+    const params = [req.params.id];
+
+    connection.query(sql, params, (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: 'Database query error' });
+        }
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Customer not found' });
+        }
+        res.status(200).json({ message: 'Customer deleted successfully' });
     });
 });
 

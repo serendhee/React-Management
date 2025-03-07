@@ -42,6 +42,7 @@ function App() {
                 <TableCell>생년월일</TableCell>
                 <TableCell>성별</TableCell>
                 <TableCell>직업</TableCell>
+                <TableCell>설정</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -54,6 +55,7 @@ function App() {
               ) : (
                 customers.map((c) => (
                   <Customer
+                    stateRefresh={fetchCustomers}
                     key={c.id}
                     id={c.id}
                     image={c.imageUrl}  // 🔥 URL 또는 로컬 경로
